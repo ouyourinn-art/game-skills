@@ -91,6 +91,12 @@ Rules:
   labels; visible focus state.
 - Stable hooks for automation: interactive pieces carry `data-*` attributes
   (e.g. `data-pool="3"`) so tests and the workbench's video recorder can click them.
+- The workbench's screenshot scenes run **one after another on the same page,
+  without reloading**: scene 2 starts where scene 1 stopped. Only the first
+  scene clicks through a start menu; later scenes continue the game. The
+  gameplay video, by contrast, starts from a fresh page load. Use the shortest
+  (breadth-first) solution of level 1 for these actions so the video looks
+  purposeful rather than wandering.
 
 ### 3. Verify (must pass before showing the user)
 
