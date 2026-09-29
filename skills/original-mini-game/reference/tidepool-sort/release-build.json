@@ -1,0 +1,196 @@
+{
+  "developer_id": "33840928",
+  "app_id": "",
+  "title": "Tidepool Sort",
+  "package_name": "com.tidepoolsort.game",
+  "version_name": "1.0.0",
+  "version_code": 1,
+  "source_dir": "source",
+  "output_dir": ".taptap-build",
+  "icon": "store-assets/icon-512.png",
+  "assets": [
+    "index.html",
+    "style.css",
+    "game.js"
+  ],
+  "replacements": [],
+  "screenshots": {
+    "viewport": {
+      "width": 440,
+      "height": 1020
+    },
+    "device_scale_factor": 2,
+    "entry": "index.html",
+    "ready_selector": "#play-btn",
+    "scenes": [
+      {
+        "name": "pool-start",
+        "actions": [
+          {
+            "click": "#play-btn",
+            "delay_ms": 600
+          }
+        ]
+      },
+      {
+        "name": "pool-sorting",
+        "actions": [
+          {
+            "click": "[data-pool=\"0\"]",
+            "delay_ms": 250
+          },
+          {
+            "click": "[data-pool=\"3\"]",
+            "delay_ms": 350
+          },
+          {
+            "click": "[data-pool=\"0\"]",
+            "delay_ms": 250
+          },
+          {
+            "click": "[data-pool=\"4\"]",
+            "delay_ms": 350
+          },
+          {
+            "click": "[data-pool=\"1\"]",
+            "delay_ms": 250
+          },
+          {
+            "click": "[data-pool=\"3\"]",
+            "delay_ms": 350
+          },
+          {
+            "click": "[data-pool=\"1\"]",
+            "delay_ms": 250
+          },
+          {
+            "click": "[data-pool=\"0\"]",
+            "delay_ms": 350
+          },
+          {
+            "click": "[data-pool=\"1\"]",
+            "delay_ms": 400
+          }
+        ]
+      },
+      {
+        "name": "pool-sorted",
+        "actions": [
+          {
+            "click": "[data-pool=\"3\"]",
+            "delay_ms": 350
+          },
+          {
+            "click": "[data-pool=\"1\"]",
+            "delay_ms": 250
+          },
+          {
+            "click": "[data-pool=\"4\"]",
+            "delay_ms": 350
+          },
+          {
+            "click": "[data-pool=\"2\"]",
+            "delay_ms": 250
+          },
+          {
+            "click": "[data-pool=\"4\"]",
+            "delay_ms": 350
+          }
+        ]
+      }
+    ]
+  },
+  "asset_overrides": [],
+  "video": {
+    "viewport": {
+      "width": 440,
+      "height": 1020
+    },
+    "device_scale_factor": 2,
+    "entry": "index.html",
+    "ready_selector": "#play-btn",
+    "duration_seconds": 20,
+    "actions": [
+      {
+        "click": "#play-btn",
+        "delay_ms": 400
+      },
+      {
+        "click": "[data-pool=\"0\"]",
+        "delay_ms": 250
+      },
+      {
+        "click": "[data-pool=\"3\"]",
+        "delay_ms": 350
+      },
+      {
+        "click": "[data-pool=\"0\"]",
+        "delay_ms": 250
+      },
+      {
+        "click": "[data-pool=\"4\"]",
+        "delay_ms": 350
+      },
+      {
+        "click": "[data-pool=\"1\"]",
+        "delay_ms": 250
+      },
+      {
+        "click": "[data-pool=\"3\"]",
+        "delay_ms": 350
+      },
+      {
+        "click": "[data-pool=\"1\"]",
+        "delay_ms": 250
+      },
+      {
+        "click": "[data-pool=\"0\"]",
+        "delay_ms": 350
+      },
+      {
+        "click": "[data-pool=\"1\"]",
+        "delay_ms": 250
+      },
+      {
+        "click": "[data-pool=\"3\"]",
+        "delay_ms": 350
+      },
+      {
+        "click": "[data-pool=\"1\"]",
+        "delay_ms": 250
+      },
+      {
+        "click": "[data-pool=\"4\"]",
+        "delay_ms": 350
+      },
+      {
+        "click": "[data-pool=\"2\"]",
+        "delay_ms": 250
+      },
+      {
+        "click": "[data-pool=\"4\"]",
+        "delay_ms": 350
+      },
+      {
+        "click": "[data-pool=\"2\"]",
+        "delay_ms": 250
+      },
+      {
+        "click": "[data-pool=\"3\"]",
+        "delay_ms": 350
+      },
+      {
+        "click": "[data-pool=\"0\"]",
+        "delay_ms": 250
+      },
+      {
+        "click": "[data-pool=\"2\"]",
+        "delay_ms": 350
+      }
+    ],
+    "cover_size": {
+      "width": 900,
+      "height": 600
+    }
+  }
+}

@@ -156,10 +156,42 @@ Write `listing.json` next to `www/`:
 The TapTap workbench then builds the APK with its WebView shell, captures
 screenshots and the gameplay video from the built APK, and uploads.
 
+### 6. Zip package for the workbench
+
+Deliver one `.zip` per game. The user drags it onto the workbench (or clicks
+“导入游戏压缩包”); it is checked and unpacked into
+`local-projects/<developer_id>/<slug>/`, then “自动查找并处理” picks it up.
+Layout (at the zip root or inside one top folder):
+
+```
+manifest.json         dossier: developer_id, title, description, gameplay,
+                      features, languages, region, release_status,
+                      publisher_role, game_type, version, package_name,
+                      version_code, icon/header paths; app_id must be empty
+release-build.json    source_dir "source", output_dir ".taptap-build",
+                      icon, assets, screenshots (cumulative scenes), video
+source/               the www files (index.html, style.css, game.js) at its
+                      top level, plus android/ (AndroidManifest.xml,
+                      MainActivity.java, res/drawable/icon.png); copy
+                      reference/tidepool-sort/android and change the package
+                      name, host and background colour
+store-assets/         icon-512.png, header-1920x1080.png
+description-en.md     optional, store copy source
+```
+
+The importer refuses the zip when: `developer_id` is missing or differs
+between the two JSON files; `app_id` is set; a project with the same slug
+already exists for any account (never overwrites; one game ↔ one account);
+it contains signing keys, executables, absolute or `..` paths, or links.
+It fills this PC's Android SDK and JDK paths and creates the game's own
+signing key under `signing/<developer_id>-<slug>/`, so leave those fields
+out or as placeholders. Use `reference/tidepool-sort/` as the model for
+`manifest.json` and `release-build.json`.
+
 ## Done means
 
 - Concept table written and distinct from every earlier game.
 - All levels solver-verified; smoke test and play-through pass; screenshots
   checked by eye.
 - User has played it (or was sent the playable page).
-- `www/` and `listing.json` delivered.
+- `www/`, `listing.json` and the workbench zip delivered.
