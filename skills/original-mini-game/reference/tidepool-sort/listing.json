@@ -1,0 +1,14 @@
+{
+  "title": "Tidepool Sort",
+  "developer_id": "33840928",
+  "package_name": "com.tidepoolsort.game",
+  "version_name": "1.0.0",
+  "version_code": 1,
+  "game_type": "益智",
+  "languages": ["英文"],
+  "description": "Gather matching shells into the same tide pool. Tap a pool to lift its top shells, then tap another pool to drop them. Shells can land on an empty pool or on shells of the same kind, and each pool holds four. 30 tide pools grow from three kinds of shells to seven, and later pools leave you only one spare. Earn up to three stars by sorting in few moves, with undo, hint and restart when you get stuck. Plays fully offline and saves your progress on the device.",
+  "features": ["30 tide pools", "Up to three stars per pool", "Undo, hint and restart", "Plays offline"],
+  "is_online_game": false,
+  "has_in_app_purchases": false,
+  "third_party": []
+}

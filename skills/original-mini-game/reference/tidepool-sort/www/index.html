@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'">
+<title>Tidepool Sort</title>
+<link rel="stylesheet" href="style.css">
+<script src="game.js"></script>
+</head>
+<body>
+<main id="app">
+  <section id="screen-menu" class="screen menu">
+    <div class="waves" aria-hidden="true"></div>
+    <h1>Tidepool Sort</h1>
+    <p class="tagline">Gather matching shells into the same tide pool.</p>
+    <div id="menu-shells" class="menu-shells" aria-hidden="true"></div>
+    <button id="play-btn" class="primary">Play</button>
+    <button id="levels-btn" class="secondary">Choose a pool</button>
+    <p class="rules">Tap a pool to lift its top shells, then tap another pool to drop them. Shells can land on an empty pool or on shells of the same kind. Each pool holds four.</p>
+  </section>
+
+  <section id="screen-levels" class="screen" hidden>
+    <header class="bar">
+      <button id="back-menu" class="ghost">‹ Menu</button>
+      <h2>Tide pools</h2>
+      <span></span>
+    </header>
+    <div id="level-grid" class="level-grid"></div>
+  </section>
+
+  <section id="screen-play" class="screen" hidden>
+    <header class="bar">
+      <button id="back-levels" class="ghost">‹ Pools</button>
+      <h2 id="level-title">Pool 1</h2>
+      <span class="counter">Moves <b id="moves">0</b> / <b id="par">0</b></span>
+    </header>
+    <div id="board" class="board"></div>
+    <p id="toast" class="toast" role="status"></p>
+    <footer class="tools">
+      <button id="undo" class="secondary">Undo (3)</button>
+      <button id="hint" class="secondary">Hint</button>
+      <button id="restart" class="secondary">Restart</button>
+    </footer>
+  </section>
+
+  <div id="result" class="result" hidden>
+    <div class="card">
+      <h2>Pool sorted!</h2>
+      <p id="result-stars" class="stars">★★★</p>
+      <p id="result-text"></p>
+      <button id="next" class="primary">Next pool</button>
+      <button id="replay" class="secondary">Play again</button>
+    </div>
+  </div>
+</main>
+</body>
+</html>
