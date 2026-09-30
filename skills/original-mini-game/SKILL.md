@@ -155,9 +155,24 @@ Write `listing.json` next to `www/`:
   更新日志 ← `release_notes`, 开发者的话 ← `developer_note`. Values written in
   this file always win; every sentence must be true of the game (no invented
   awards, player counts or features).
-- Any of these left out are **written by the workbench itself, offline, from
-  the game's own files** (the `www/` source, or the web assets inside the APK).
-  It only states what it can verify there, so build the game to be readable:
+- Any of these left out are **written by the workbench itself, offline, in the
+  approved listing template** (the wording of Tidepool Sort's approved
+  listing), and entered straight into TapTap with no review step. It reads
+  the game's own files (the `www/` source, or the web assets inside the APK)
+  and fills the template like this:
+
+  | Field | Template |
+  |---|---|
+  | 简介 | `<tagline> <rules>` ⏎⏎ `<Title> has <N> <levels>. Earn up to three stars in each <level>, with undo, hint and restart when you get stuck. The game plays fully offline and saves progress on this device.` |
+  | 首页推荐语 | `<tagline> across <N> relaxing puzzles.` (≤ 80 characters) |
+  | 更新日志 | `First release:` then `- <N> <levels>`, `- Up to three stars per <level>`, `- Undo, hint and restart`, `- Plays fully offline` |
+  | 开发者的话 | `<Title> is a small, quiet puzzle game: <tagline>. Every <level> is generated from a fixed seed and checked by a solver, so each one can be finished. There are no ads and no purchases; the game plays offline and keeps your progress on your device.` |
+
+- **Every game built with this skill meets that standard**, so every template
+  sentence is true of it: plays offline, no ads and no purchases, progress
+  saved on the device, seeded levels checked by a solver, undo / hint /
+  restart, up to three stars per level. Build it so the workbench can read
+  each part:
 
   | The workbench reads | Put it in the game as |
   |---|---|
@@ -168,11 +183,13 @@ Write `listing.json` next to `www/`:
   | What a level is called | a title template such as `` `Level ${n}` `` (or `Pool ${n}`), plus a heading like "Tide pools" on the level list |
   | Tools | buttons labelled Undo, Hint, Restart |
   | Star ratings | the ★ character in the result screen |
+  | Solver-checked levels | levels made by `generateLevel(n)` from a seeded random generator (`rng(seed)`), each checked by a `function solve…(…)` |
   | Saves progress | `localStorage.setItem(...)` |
   | Plays offline | no `http(s)://`, `fetch`, `XMLHttpRequest` or `WebSocket` anywhere |
   | No ads or purchases | no ad/billing code, and `"has_in_app_purchases": false` in this file |
 
-  Anything it cannot find is left out of the text rather than guessed.
+  A template sentence whose part is missing from the game is dropped rather
+  than written (for example, network code means no "plays offline").
 - `third_party` lists any open-source code/art with its license.
 
 The TapTap workbench then builds the APK with its WebView shell, captures
