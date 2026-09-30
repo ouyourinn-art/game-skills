@@ -135,7 +135,11 @@ Write `listing.json` next to `www/`:
   "version_code": 1,
   "game_type": "益智",
   "languages": ["英文"],
-  "description": "…store description, English, from the real rules…",
+  "description": "…store description (简介), English plain text, from the real rules…",
+  "gameplay": "One sentence: what the player does.",
+  "tagline": "首页推荐语, English, at most 80 characters",
+  "release_notes": "更新日志 for this version, e.g. First release: - feature …",
+  "developer_note": "开发者的话: a short factual note about how the game was made",
   "features": ["30 tide pools", "Undo, hint and restart", "Plays offline"],
   "is_online_game": false,
   "has_in_app_purchases": false,
@@ -144,7 +148,15 @@ Write `listing.json` next to `www/`:
 ```
 
 - One game ↔ one developer ID ↔ one package name ↔ its own signing key.
-- The description states only what the game really does.
+- The description states only what the game really does. Write it as plain
+  text (no Markdown heading): TapTap shows it literally.
+- The workbench fills every text field of the TapTap version page from this
+  file: 简介 ← `description`, 首页推荐语 ← `tagline` (≤ 80 characters),
+  更新日志 ← `release_notes`, 开发者的话 ← `developer_note`. Fill all four;
+  every sentence must be true of the game (no invented awards, player counts
+  or features). If `tagline` is missing the workbench uses `gameplay`; if
+  `release_notes` is missing on a 1.0 version it lists `features`; it never
+  invents a developer's note.
 - `third_party` lists any open-source code/art with its license.
 
 The TapTap workbench then builds the APK with its WebView shell, captures
