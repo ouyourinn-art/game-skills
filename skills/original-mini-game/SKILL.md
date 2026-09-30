@@ -129,7 +129,7 @@ Write `listing.json` next to `www/`:
 ```json
 {
   "title": "Tidepool Sort",
-  "developer_id": "<the one account this game is for>",
+  "developer_id": "",
   "package_name": "com.<studio>.<game>",
   "version_name": "1.0.0",
   "version_code": 1,
@@ -142,6 +142,10 @@ Write `listing.json` next to `www/`:
 ```
 
 - One game ↔ one developer ID ↔ one package name ↔ its own signing key.
+- Leave `developer_id` empty for a new game. The workbench gives the game to
+  the account that logs in (it asks first if that account already has games),
+  and records the App ID TapTap assigns when the game is created. Neither ID
+  goes into the APK.
 - The in-game tagline and rules open the 简介 and the 首页推荐语, so write
   them as plain English sentences that say only what the game really does.
   Keep the tagline short enough that `<tagline> across <N> relaxing puzzles.`
