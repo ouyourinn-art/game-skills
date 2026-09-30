@@ -7,8 +7,8 @@ description: Build one original, complete, offline HTML5 mini game (its own core
 
 Build **one** small game that stands on its own as a product: a real core
 mechanic, a level structure, its own art and name, no bugs, fully offline.
-The output is a `www/` folder (plus store copy) that the TapTap workbench
-packages into an APK.
+The output is a `www/` folder (plus `listing.json`) that the TapTap workbench
+packages into an APK; the workbench writes the store texts itself.
 
 Reference implementation: `reference/tidepool-sort/` (shell sorting puzzle,
 30 generated levels, solver-verified, play-tested). Read it before starting.
@@ -70,7 +70,7 @@ www/
   style.css
   game.js      # all logic; export pure functions via module.exports for Node tests
   (assets/     # only if needed; prefer inline SVG drawn in code)
-listing.json   # store copy, see step 5
+listing.json   # listing facts, see step 5
 ```
 
 Rules:
@@ -135,12 +135,6 @@ Write `listing.json` next to `www/`:
   "version_code": 1,
   "game_type": "益智",
   "languages": ["英文"],
-  "description": "(optional) 简介, English plain text, from the real rules",
-  "gameplay": "(optional) One sentence: what the player does.",
-  "tagline": "(optional) 首页推荐语, English, at most 80 characters",
-  "release_notes": "(optional) 更新日志 for this version",
-  "developer_note": "(optional) 开发者的话, short and factual",
-  "features": ["30 tide pools", "Undo, hint and restart", "Plays offline"],
   "is_online_game": false,
   "has_in_app_purchases": false,
   "third_party": []
@@ -148,18 +142,21 @@ Write `listing.json` next to `www/`:
 ```
 
 - One game ↔ one developer ID ↔ one package name ↔ its own signing key.
-- The description states only what the game really does. Write it as plain
-  text (no Markdown heading): TapTap shows it literally.
-- The workbench fills every text field of the TapTap version page:
-  简介 ← `description`, 首页推荐语 ← `tagline` (≤ 80 characters),
-  更新日志 ← `release_notes`, 开发者的话 ← `developer_note`. Values written in
-  this file always win; every sentence must be true of the game (no invented
-  awards, player counts or features).
-- Any of these left out are **written by the workbench itself, offline, in the
-  approved listing template** (the wording of Tidepool Sort's approved
-  listing), and entered straight into TapTap with no review step. It reads
-  the game's own files (the `www/` source, or the web assets inside the APK)
-  and fills the template like this:
+- The in-game tagline and rules open the 简介 and the 首页推荐语, so write
+  them as plain English sentences that say only what the game really does.
+  Keep the tagline short enough that `<tagline> across <N> relaxing puzzles.`
+  fits in 80 characters.
+- Leave the store texts out of this file. The workbench fills every text
+  field of the TapTap version page (简介, 首页推荐语, 更新日志, 开发者的话)
+  **itself, offline, in the approved listing template** (the wording of
+  Tidepool Sort's approved listing) and enters them straight into TapTap with
+  no review step. (`description`, `tagline`, `release_notes`,
+  `developer_note`, `gameplay` or `features` written here would replace the
+  template for that field; add one only when the user asks for different
+  wording. The reference `listing.json` carries them because it is the
+  approved listing the template was taken from.) The workbench reads the
+  game's own files (the `www/` source, or the web assets inside the APK) and
+  fills the template like this:
 
   | Field | Template |
   |---|---|
