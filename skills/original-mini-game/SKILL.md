@@ -196,6 +196,21 @@ Write `listing.json` next to `www/`:
 The TapTap workbench then builds the APK with its WebView shell, captures
 screenshots and the gameplay video from the built APK, and uploads.
 
+**The APK carries its own listing kit.** Put these in `www/taptap/` and list
+them in the build's `assets`, so they end up under `assets/taptap/` in the APK:
+
+| File | Content |
+|---|---|
+| `listing.json` | `title`, `game_type`, `languages`, `is_online_game`, `has_in_app_purchases`, `region`, `release_status`, `publisher_role`, `listed_elsewhere` |
+| `capture.json` | `{"screenshots": {…}, "video": {…}}`: the same capture steps as the build config |
+| `icon-512.png` | 512×512 store icon |
+| `header-1920x1080.png` | 1920×1080 English header image |
+
+The user then only drags the APK into the workbench: it reads the kit, writes
+the store texts from the game's own words, records screenshots and the video
+from the APK, gives the game to the account that logs in, and uploads the APK
+unchanged.
+
 ## Done means
 
 - Concept table written and distinct from every earlier game.
