@@ -135,11 +135,11 @@ Write `listing.json` next to `www/`:
   "version_code": 1,
   "game_type": "益智",
   "languages": ["英文"],
-  "description": "…store description (简介), English plain text, from the real rules…",
-  "gameplay": "One sentence: what the player does.",
-  "tagline": "首页推荐语, English, at most 80 characters",
-  "release_notes": "更新日志 for this version, e.g. First release: - feature …",
-  "developer_note": "开发者的话: a short factual note about how the game was made",
+  "description": "(optional) 简介, English plain text, from the real rules",
+  "gameplay": "(optional) One sentence: what the player does.",
+  "tagline": "(optional) 首页推荐语, English, at most 80 characters",
+  "release_notes": "(optional) 更新日志 for this version",
+  "developer_note": "(optional) 开发者的话, short and factual",
   "features": ["30 tide pools", "Undo, hint and restart", "Plays offline"],
   "is_online_game": false,
   "has_in_app_purchases": false,
@@ -150,13 +150,29 @@ Write `listing.json` next to `www/`:
 - One game ↔ one developer ID ↔ one package name ↔ its own signing key.
 - The description states only what the game really does. Write it as plain
   text (no Markdown heading): TapTap shows it literally.
-- The workbench fills every text field of the TapTap version page from this
-  file: 简介 ← `description`, 首页推荐语 ← `tagline` (≤ 80 characters),
-  更新日志 ← `release_notes`, 开发者的话 ← `developer_note`. Fill all four;
-  every sentence must be true of the game (no invented awards, player counts
-  or features). If `tagline` is missing the workbench uses `gameplay`; if
-  `release_notes` is missing on a 1.0 version it lists `features`; it never
-  invents a developer's note.
+- The workbench fills every text field of the TapTap version page:
+  简介 ← `description`, 首页推荐语 ← `tagline` (≤ 80 characters),
+  更新日志 ← `release_notes`, 开发者的话 ← `developer_note`. Values written in
+  this file always win; every sentence must be true of the game (no invented
+  awards, player counts or features).
+- Any of these left out are **written by the workbench itself, offline, from
+  the game's own files** (the `www/` source, or the web assets inside the APK).
+  It only states what it can verify there, so build the game to be readable:
+
+  | The workbench reads | Put it in the game as |
+  |---|---|
+  | Game name | `<title>` and the menu `<h1>` |
+  | Home-page line | one short sentence in an element with class `tagline` |
+  | How to play (opens 简介) | the in-game instructions in an element with class `rules` (or `help` / `how-to-play`) |
+  | Level count | one constant such as `const TOTAL_LEVELS = 30;` |
+  | What a level is called | a title template such as `` `Level ${n}` `` (or `Pool ${n}`), plus a heading like "Tide pools" on the level list |
+  | Tools | buttons labelled Undo, Hint, Restart |
+  | Star ratings | the ★ character in the result screen |
+  | Saves progress | `localStorage.setItem(...)` |
+  | Plays offline | no `http(s)://`, `fetch`, `XMLHttpRequest` or `WebSocket` anywhere |
+  | No ads or purchases | no ad/billing code, and `"has_in_app_purchases": false` in this file |
+
+  Anything it cannot find is left out of the text rather than guessed.
 - `third_party` lists any open-source code/art with its license.
 
 The TapTap workbench then builds the APK with its WebView shell, captures
