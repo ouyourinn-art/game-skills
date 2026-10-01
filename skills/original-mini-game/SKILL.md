@@ -260,6 +260,17 @@ the store texts from the game's own words, records screenshots and the video
 from the APK, gives the game to the account that logs in, and uploads the APK
 unchanged.
 
+**Listing package (what the user drags in).** `make_release` (the
+workbench's `prepare_release.py`) builds the APK, records the screenshots,
+video and cover, runs the material self-check, and writes one
+`%LOCALAPPDATA%\TapTapBatch\packages\<game>-<version>.zip` holding the APK
+and those finished materials. Dragging that zip into the workbench (or putting
+it in the batch APK library) uploads the materials exactly as they are —
+nothing is recorded again. A zip made by hand works too: one `.apk`, 3–12
+images named `截图…`/`screenshot…`, one `.mp4`, a 900×600 `…封面…`/`…cover…`
+image, optionally `…宣传图…`/`header…` and `…图标…`/`icon…`; it is checked
+against the material rules when it is taken in.
+
 ## Done means
 
 - Concept table written and distinct from every earlier game.
