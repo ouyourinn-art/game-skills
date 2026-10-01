@@ -7,11 +7,19 @@ description: Build one original, complete, offline HTML5 mini game (its own core
 
 Build **one** small game that stands on its own as a product: a real core
 mechanic, a level structure, its own art and name, no bugs, fully offline.
-The output is a `www/` folder (plus store copy) that the TapTap workbench
-packages into an APK.
+The output is a `www/` folder (plus `listing.json`) that the TapTap workbench
+packages into an APK; the workbench writes the store texts itself.
 
-Reference implementation: `reference/tidepool-sort/` (shell sorting puzzle,
-30 generated levels, solver-verified, play-tested). Read it before starting.
+Reference implementations — read both before starting:
+
+- `reference/tidepool-sort/` — shell sorting puzzle, 30 generated levels,
+  solver-verified, play-tested.
+- `reference/pinwheel-rows/` — the **store-material standard**: an
+  illustrated garden scene behind every screen, a wide layout for the 16:9
+  video, a result card that keeps the finished board in view, the capture plan,
+  and the art pages that draw the icon and 16:9 header from the game's own
+  drawing code (`art/render_art.py`). Its first version was rejected by TapTap
+  for its materials (see "Store materials" below); this one fixes that.
 
 ## Boundaries (read first)
 
@@ -70,7 +78,7 @@ www/
   style.css
   game.js      # all logic; export pure functions via module.exports for Node tests
   (assets/     # only if needed; prefer inline SVG drawn in code)
-listing.json   # store copy, see step 5
+listing.json   # listing facts, see step 5
 ```
 
 Rules:
@@ -91,6 +99,47 @@ Rules:
   labels; visible focus state.
 - Stable hooks for automation: interactive pieces carry `data-*` attributes
   (e.g. `data-pool="3"`) so tests and the workbench's video recorder can click them.
+- Every level is reachable from the level list by clicks (all levels open,
+  stars record progress), so screenshots and the video can show the largest
+  boards without playing through the game first.
+- The look must pass TapTap's material rules — see "Store materials" below.
+  In short: an illustrated, textured scene behind every screen (never a plain
+  colour or gradient page), a wide layout, a win screen that does not black
+  out the board.
+
+### Store materials (TapTap rejects listings over these)
+
+Sources: material requirements
+https://developer.taptap.cn/docs/store/release/publish/material/ and review
+rules https://developer.taptap.cn/docs/store/release/publish/agree/.
+
+TapTap review rule 2.1.10: images and videos must be clear — no blurring,
+stretching, compression, **black or white edges** — and must not be made of
+**overly simple patterns such as solid colours and gradients**. Pinwheel Rows
+1.0 was rejected for exactly this: a portrait game letterboxed inside a
+landscape video (75 % black bars), a cover with black bars, screenshots that
+were mostly an empty light-green gradient around a small board, and a header
+with a gradient background and a tagline. Build every game so its materials
+cannot fail this way:
+
+| Material | Requirement | How the game provides it |
+|---|---|---|
+| Game screens | No large flat or gradient areas | Draw a scene behind everything (lawn texture, fence, flower beds, props — see `gardenSVG()` in the reference), seeded so it never changes while playing. Put the board in a framed bed/tray. The workbench refuses captures where more than 40 % of the picture is flat. |
+| Screenshots | Portrait 720×1280 or larger, 3:8–5:8, all the same orientation, real gameplay | `capture.json` screenshots at `360×640`, `device_scale_factor` 3 (1080×1920): 3–5 scenes on the **largest** boards — mid-play, a hint, the win moment — and the level list last. |
+| Promotional video | **16:9 landscape only**, ≥ 15 s, gameplay within the first seconds | A **wide layout** (`@media (min-aspect-ratio: 5/4)`: info panel | board | tools) whose UI scales with the screen height, so a 1920×1080 window shows big tiles. `capture.json` video: viewport `1920×1080`, `device_scale_factor` 1, ~20 s of real levels played with the solver's moves. A portrait viewport is refused (it would need black bars). |
+| Video cover | 900×600, no bars | Nothing to do: the workbench renders the game itself at 3:2 after recording. The wide layout must also look right at 3:2. |
+| Icon 512×512 | Square, full-bleed, no transparent/white/black/gradient background, no rounded corners cut into the image | Game pieces on a textured scene filling the square (`art/icon.html`). |
+| 16:9 header 1920×1080 | **Only the game name as text** (no tagline), recognisable game art, not a screenshot or simple collage, no icon, no plain or gradient background | The scene, a sign with the title, a board in play (`art/header.html`). |
+
+Win screens: a card at the bottom (portrait) or beside the board (wide)
+instead of a full-screen dark overlay, so the solved board stays visible in
+screenshots and the video.
+
+After building, render the art (`python art/render_art.py`), run the
+playtest at phone **and** wide sizes, and look at every image. The workbench
+runs the same material self-check before uploading (`material_check.py`:
+black/white edges, flat share, sizes, orientation) and stops with a list of
+problems instead of sending a listing that would come back.
 
 ### 3. Verify (must pass before showing the user)
 
@@ -129,14 +178,12 @@ Write `listing.json` next to `www/`:
 ```json
 {
   "title": "Tidepool Sort",
-  "developer_id": "<the one account this game is for>",
+  "developer_id": "",
   "package_name": "com.<studio>.<game>",
   "version_name": "1.0.0",
   "version_code": 1,
   "game_type": "益智",
   "languages": ["英文"],
-  "description": "…store description, English, from the real rules…",
-  "features": ["30 tide pools", "Undo, hint and restart", "Plays offline"],
   "is_online_game": false,
   "has_in_app_purchases": false,
   "third_party": []
@@ -144,16 +191,82 @@ Write `listing.json` next to `www/`:
 ```
 
 - One game ↔ one developer ID ↔ one package name ↔ its own signing key.
-- The description states only what the game really does.
+- Leave `developer_id` empty for a new game. The workbench gives the game to
+  the account that logs in (it asks first if that account already has games),
+  and records the App ID TapTap assigns when the game is created. Neither ID
+  goes into the APK.
+- The in-game tagline and rules open the 简介 and the 首页推荐语, so write
+  them as plain English sentences that say only what the game really does.
+  Keep the tagline short enough that `<tagline> across <N> relaxing puzzles.`
+  fits in 80 characters.
+- Leave the store texts out of this file. The workbench fills every text
+  field of the TapTap version page (简介, 首页推荐语, 更新日志, 开发者的话)
+  **itself, offline, in the approved listing template** (the wording of
+  Tidepool Sort's approved listing) and enters them straight into TapTap with
+  no review step. (`description`, `tagline`, `release_notes`,
+  `developer_note`, `gameplay` or `features` written here would replace the
+  template for that field; add one only when the user asks for different
+  wording. The reference `listing.json` carries them because it is the
+  approved listing the template was taken from.) The workbench reads the
+  game's own files (the `www/` source, or the web assets inside the APK) and
+  fills the template like this:
+
+  | Field | Template |
+  |---|---|
+  | 简介 | `<tagline> <rules>` ⏎⏎ `<Title> has <N> <levels>. Earn up to three stars in each <level>, with undo, hint and restart when you get stuck. The game plays fully offline and saves progress on this device.` |
+  | 首页推荐语 | `<tagline> across <N> relaxing puzzles.` (≤ 80 characters) |
+  | 更新日志 | `First release:` then `- <N> <levels>`, `- Up to three stars per <level>`, `- Undo, hint and restart`, `- Plays fully offline` |
+  | 开发者的话 | `<Title> is a small, quiet puzzle game: <tagline>. Every <level> is generated from a fixed seed and checked by a solver, so each one can be finished. There are no ads and no purchases; the game plays offline and keeps your progress on your device.` |
+
+- **Every game built with this skill meets that standard**, so every template
+  sentence is true of it: plays offline, no ads and no purchases, progress
+  saved on the device, seeded levels checked by a solver, undo / hint /
+  restart, up to three stars per level. Build it so the workbench can read
+  each part:
+
+  | The workbench reads | Put it in the game as |
+  |---|---|
+  | Game name | `<title>` and the menu `<h1>` |
+  | Home-page line | one short sentence in an element with class `tagline` |
+  | How to play (opens 简介) | the in-game instructions in an element with class `rules` (or `help` / `how-to-play`) |
+  | Level count | one constant such as `const TOTAL_LEVELS = 30;` |
+  | What a level is called | a title template such as `` `Level ${n}` `` (or `Pool ${n}`), plus a heading like "Tide pools" on the level list |
+  | Tools | buttons labelled Undo, Hint, Restart |
+  | Star ratings | the ★ character in the result screen |
+  | Solver-checked levels | levels made by `generateLevel(n)` from a seeded random generator (`rng(seed)`), each checked by a `function solve…(…)` |
+  | Saves progress | `localStorage.setItem(...)` |
+  | Plays offline | no `http(s)://`, `fetch`, `XMLHttpRequest` or `WebSocket` anywhere |
+  | No ads or purchases | no ad/billing code, and `"has_in_app_purchases": false` in this file |
+
+  A template sentence whose part is missing from the game is dropped rather
+  than written (for example, network code means no "plays offline").
 - `third_party` lists any open-source code/art with its license.
 
 The TapTap workbench then builds the APK with its WebView shell, captures
 screenshots and the gameplay video from the built APK, and uploads.
 
+**The APK carries its own listing kit.** Put these in `www/taptap/` and list
+them in the build's `assets`, so they end up under `assets/taptap/` in the APK:
+
+| File | Content |
+|---|---|
+| `listing.json` | `title`, `game_type`, `languages`, `is_online_game`, `has_in_app_purchases`, `region`, `release_status`, `publisher_role`, `listed_elsewhere` |
+| `capture.json` | `{"screenshots": {…}, "video": {…}}`: the same capture steps as the build config |
+| `icon-512.png` | 512×512 store icon (rules in "Store materials") |
+| `header-1920x1080.png` | 1920×1080 English header image: only the game name as text |
+
+The user then only drags the APK into the workbench: it reads the kit, writes
+the store texts from the game's own words, records screenshots and the video
+from the APK, gives the game to the account that logs in, and uploads the APK
+unchanged.
+
 ## Done means
 
 - Concept table written and distinct from every earlier game.
-- All levels solver-verified; smoke test and play-through pass; screenshots
-  checked by eye.
+- All levels solver-verified; smoke test and play-through pass at phone and
+  wide sizes; screenshots checked by eye.
+- Store materials meet the table in "Store materials": textured scene, wide
+  layout for the 1920×1080 video, icon and title-only header rendered from the
+  art pages, capture plan on the largest boards.
 - User has played it (or was sent the playable page).
 - `www/` and `listing.json` delivered.
