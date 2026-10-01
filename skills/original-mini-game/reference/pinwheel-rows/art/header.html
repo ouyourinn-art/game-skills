@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pinwheel Rows header</title>
+<link rel="stylesheet" href="../www/style.css">
+<script src="../www/game.js"></script>
+<style>
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: #84bf63; }
+  .stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+  .layer { position: absolute; inset: 0; }
+  .sign-board {
+    position: absolute; left: 110px; top: 292px; width: 800px; padding: 26px;
+    border: 5px solid var(--wood-dark); border-radius: 40px; background-color: var(--wood);
+    background-image:
+      repeating-linear-gradient(90deg, rgba(60, 30, 10, 0.2) 0 3px, transparent 3px 83px),
+      repeating-linear-gradient(90deg, rgba(255, 236, 200, 0.12) 0 4px, transparent 4px 27px),
+      repeating-linear-gradient(0deg, rgba(90, 50, 20, 0.1) 0 1px, transparent 1px 9px);
+    box-shadow: 0 12px 0 #6a4022, 0 26px 40px rgba(30, 50, 20, 0.45);
+  }
+  .sign-face {
+    background: var(--card); border-radius: 22px; padding: 26px 30px 34px; text-align: center;
+    box-shadow: inset 0 -6px 0 rgba(0, 0, 0, 0.06);
+  }
+  .sign-face h1 { margin: 0; font-size: 128px; line-height: 1.02; letter-spacing: 1px; color: #23402c; }
+  .sign-face h1 span { display: block; }
+  .sign-face h1 .accent { color: #e8793f; }
+  .post { position: absolute; width: 34px; background: #a8743f; border: 4px solid #6d4424; border-radius: 8px; }
+  .art-board { position: absolute; }
+  .petal-s { position: absolute; width: 26px; height: 34px; border-radius: 60% 0 60% 0; opacity: 0.95; box-shadow: 0 3px 4px rgba(0,0,0,.15); }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="layer" id="lawn"></div>
+  <div class="post" style="left:270px; top:620px; height:320px"></div>
+  <div class="post" style="left:730px; top:620px; height:320px"></div>
+  <div class="sign-board"><div class="sign-face"><h1><span>Pinwheel</span><span class="accent">Rows</span></h1></div></div>
+  <div class="art-board" id="art-board"></div>
+  <div class="layer" id="front"></div>
+</div>
+<script>
+  const W = 1920, H = 1080;
+  document.getElementById("lawn").innerHTML = gardenSVG(W, H, 5, { sticks: false });
+  // the bed: two rows finished, two still to sort, one pinwheel glowing
+  const rows = 4, cols = 4, tile = 150, gap = 15;
+  const tiles = [0, 0, 0, 0, 2, 2, 2, 2, 1, 3, 1, 1, 3, 3, 1, 3];
+  const holder = document.getElementById("art-board");
+  const planter = document.createElement("div");
+  planter.className = "planter";
+  planter.style.setProperty("--tile", tile + "px");
+  const board = document.createElement("div");
+  board.className = "board";
+  board.style.setProperty("--tile", tile + "px");
+  board.style.setProperty("--gap", gap + "px");
+  board.style.setProperty("--cols", cols);
+  board.style.setProperty("--rows", rows);
+  board.style.gridTemplateColumns = `repeat(${cols}, ${tile}px) 34px`;
+  for (let r = 0; r < rows; r++) {
+    const done = rowDone(tiles, cols, r);
+    for (let c = 0; c < cols; c++) {
+      const cell = document.createElement("div");
+      cell.className = "tile" + (done ? " done" : "");
+      cell.style.gridRow = r + 1; cell.style.gridColumn = c + 1;
+      cell.style.background = FLOWERS[tiles[r * cols + c]].tile;
+      cell.innerHTML = flowerSVG(tiles[r * cols + c], Math.round(tile * 0.74));
+      board.appendChild(cell);
+    }
+    const mark = document.createElement("div");
+    mark.className = "row-mark" + (done ? " done" : "");
+    mark.style.gridRow = r + 1; mark.style.gridColumn = cols + 1;
+    mark.style.width = mark.style.height = "34px"; mark.style.fontSize = "1.3rem";
+    mark.textContent = done ? "✓" : "";
+    board.appendChild(mark);
+  }
+  const knob = Math.round(tile * 0.5);
+  for (let k = 0; k < pinwheelCount(rows, cols); k++) {
+    const r = Math.floor(k / (cols - 1)), c = k % (cols - 1);
+    const b = document.createElement("div");
+    b.className = "pinwheel" + (k === 7 ? " hint" : "");
+    b.style.width = b.style.height = knob + "px";
+    b.style.borderWidth = "4px";
+    b.style.animation = "none";
+    b.style.left = gap + (c + 1) * (tile + gap) - gap / 2 - knob / 2 + "px";
+    b.style.top = gap + (r + 1) * (tile + gap) - gap / 2 - knob / 2 + "px";
+    b.style.setProperty("--spin", (k * 25) + "deg");
+    b.innerHTML = pinwheelSVG(knob);
+    board.appendChild(b);
+  }
+  planter.appendChild(board);
+  holder.appendChild(planter);
+  planter.style.borderWidth = "5px";
+  const box = planter.getBoundingClientRect();
+  holder.style.left = (W - 100 - box.width) + "px";
+  holder.style.top = Math.round((H - box.height) / 2 + 6) + "px";
+  // garden pinwheels on sticks and a few drifting petals in front
+  const u = 2.7;
+  const front = [
+    gardenPinwheel(985, 640, 36 * u * 0.62, u * 0.75, 55),
+    gardenPinwheel(70, 230, 30 * u * 0.62, u * 0.7, 20),
+  ].join("");
+  document.getElementById("front").innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${front}</svg>`;
+  const petalSpots = [[880, 180, 0, 30], [1180, 60, 1, -20], [1610, 110, 2, 60], [960, 420, 3, 10], [330, 210, 1, 80], [640, 220, 2, -40], [1860, 560, 0, 20], [470, 960, 3, 50]];
+  for (const [x, y, k, a] of petalSpots) {
+    const p = document.createElement("span");
+    p.className = "petal-s";
+    p.style.left = x + "px"; p.style.top = y + "px";
+    p.style.background = FLOWERS[k].fill;
+    p.style.transform = `rotate(${a}deg)`;
+    document.getElementById("stage").appendChild(p);
+  }
+</script>
+</body>
+</html>

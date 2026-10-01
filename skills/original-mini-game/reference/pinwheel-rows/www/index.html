@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'">
+<title>Pinwheel Rows</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="style.css">
+<script src="game.js"></script>
+</head>
+<body>
+<div id="garden" class="garden" aria-hidden="true"></div>
+<main id="app">
+  <section id="screen-menu" class="screen menu">
+    <div class="sign">
+      <div id="menu-art" class="menu-art" aria-hidden="true"></div>
+      <h1>Pinwheel Rows</h1>
+      <p class="tagline">Line up rows of flowers by turning pinwheels.</p>
+      <button id="play-btn" class="primary">Play</button>
+      <button id="levels-btn" class="secondary">Choose a garden</button>
+      <p class="rules">Tap a pinwheel to turn the four tiles around it one step clockwise. A garden is done when each row holds a single kind of flower. Every flower has its own shape, so colors are not needed to play.</p>
+    </div>
+  </section>
+
+  <section id="screen-levels" class="screen" hidden>
+    <header class="bar">
+      <button id="back-menu" class="ghost">‹ Menu</button>
+      <h2>Gardens</h2>
+      <span></span>
+    </header>
+    <div id="level-grid" class="level-grid"></div>
+  </section>
+
+  <section id="screen-play" class="screen" hidden>
+    <header class="bar">
+      <button id="back-levels" class="ghost">‹ Gardens</button>
+      <h2 id="level-title">Garden 1</h2>
+      <span class="counter">Moves <b id="moves">0</b> / <b id="par">0</b></span>
+    </header>
+    <div id="board-wrap" class="board-wrap"><div class="planter"><div id="board" class="board"></div></div></div>
+    <p id="toast" class="toast" role="status"></p>
+    <footer class="tools">
+      <button id="undo" class="secondary">Undo</button>
+      <button id="hint" class="secondary">Hint</button>
+      <button id="restart" class="secondary">Restart</button>
+    </footer>
+  </section>
+
+  <div id="petals" class="petals" aria-hidden="true"></div>
+  <div id="result" class="result" hidden>
+    <div class="card">
+      <div class="card-head"><h2>Garden in bloom!</h2><p id="result-stars" class="stars">★★★</p></div>
+      <p id="result-text"></p>
+      <div class="card-actions">
+        <button id="next" class="primary">Next garden</button>
+        <button id="replay" class="secondary">Play again</button>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>
